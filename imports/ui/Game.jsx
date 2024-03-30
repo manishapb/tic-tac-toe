@@ -2,20 +2,25 @@ import React from 'react';
 import { Meteor } from 'meteor/meteor';
 
 
-function updateGrid(gameId, symbol) {
+function updateGrid(gameId, symbol, currentPlayer) {
     return function(idx) {
         Meteor.call('games.update', gameId, idx, symbol, (_, res)=> {
-            if(res)
-                alert("Game Over. Winner: " + res);
+            if(res) {
+                if (res === currentPlayer)
+                    alert("You win");
+                else
+                    alert("You lose");
+            }
         })
     }
 }
 
-const Cell = ({idx, val, onClick, disabled}) => {
+const Cell = ({idx, val, onClick}) => {
+    // console.log("disabled: ", disabled, "idx: ", idx);
     return (
         <div
           className='cell has-background-white'
-          onClick={() => onClick(idx)} disabled={disabled}>
+          onClick={() => onClick(idx)} >
             { val || '_' }
         </div>
     );
@@ -26,9 +31,9 @@ export const Game = ({ game }) => {
     let uid = Meteor.userId();
     let symbol = uid === player1? 'X' : 'O';
     let yourTurn = (state === 'active' && currentPlayer === uid); 
-    let onClick = yourTurn? updateGrid(_id, symbol) : () => null;
+    let onClick = yourTurn? updateGrid(_id, symbol, currentPlayer) : () => null;
     let cells = grid.flat();
-    let gameEnded = state === 'ended';
+    let disabled = state === 'ended';
     console.log("game: ", game);
     
     return (
@@ -41,7 +46,7 @@ export const Game = ({ game }) => {
                           idx={idx} 
                           val={val}
                           onClick={onClick}
-                          disabled={gameEnded}/>) }
+                          disabled={disabled || val !== null}/>) }
                 </div>
             </div>
             <div>
