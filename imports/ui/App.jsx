@@ -31,7 +31,7 @@ export const App = () => {
       <div className='hero-body'>
         { isGameLoading()? 
            <Loading /> 
-           : (game? <Game /> : <Home />) }
+           : (game? <Game game={game} /> : <Home />) }
       </div>
     </section>
   );

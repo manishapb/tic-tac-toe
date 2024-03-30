@@ -1,7 +1,7 @@
 import { Mongo } from 'meteor/mongo';
 
 export const GameCollection = new Mongo.Collection('games');
-globalThis.Games = GameCollection;
+// globalThis.Games = GameCollection;
 
 export function makeGameForUser(userId) {
     const grid = Array(3).fill(Array(3));
