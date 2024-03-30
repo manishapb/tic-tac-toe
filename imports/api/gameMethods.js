@@ -1,6 +1,18 @@
 import { Meteor } from 'meteor/meteor';
 import { GameCollection } from '../db/Collections';
 
+function gameOver(grid) {
+    for (let i=0; i<3; i++) {
+        if ((grid[i][0] && (grid[i][0] === grid[i][1] && grid[i][1] === grid[i][2])) ||
+            (grid[0][i] && (grid[0][i] === grid[1][i] && grid[1][i] === grid[2][i])))
+            return true;
+    }
+    if ((grid[0][0] && (grid[0][0] === grid[1][1] && grid[1][1] === grid[2][2])) ||
+        (grid[2][0] && (grid[2][0] === grid[1][1] && grid[1][1] === grid[0][2])))
+        return true;
+    return false;
+}
+
 Meteor.methods({
     'games.new'() {
         let userId = Meteor.userId();
@@ -10,7 +22,9 @@ Meteor.methods({
             player2: null,
             currentPlayer: userId,
             grid: grid,
-            state: 'waiting'
+            state: 'waiting',
+            winner: null,
+            winnerSymbol: null
         });
 
         let game = GameCollection.findOne({
@@ -41,12 +55,21 @@ Meteor.methods({
         grid[x][y] = symbol;
 
         let nextPlayer = game.currentPlayer === game.player1?
-            game.player2 : game.player1;
+                game.player2 : game.player1;
 
         GameCollection.update(
             { _id: gameId },
             { $set: { grid: grid,
-                      currentPlayer: nextPlayer }}          
+                      currentPlayer: nextPlayer }}
         );
+    
+        if (gameOver(grid)) {
+            GameCollection.update(
+                { _id: gameId },
+                { $set: { state: 'ended',
+                          winner: grid.currentPlayer,
+                          winnerSymbol: symbol  }}
+            );
+        }
     }
 });
