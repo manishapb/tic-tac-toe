@@ -38,10 +38,13 @@ export const Game = ({ game }) => {
                 </div>
             </div>
             <div>
+                Game Id: {_id}
+            </div>
+            <div>
                 Game state: {state}
             </div>
             <div>
-                Your turn?: {yourTurn || 'false'}
+                Your turn?: {yourTurn? 'true' : 'false'}
             </div>
         </div>
     );

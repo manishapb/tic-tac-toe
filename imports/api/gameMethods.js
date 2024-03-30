@@ -20,17 +20,33 @@ Meteor.methods({
         return game;
     },
 
+    'games.join'(gameId) {
+        let game = GameCollection.findOne({_id: gameId});
+        let player2 = Meteor.userId();
+
+        GameCollection.update(
+            { _id: gameId },
+            { $set: { player2,
+                      state: 'active' }}
+        );
+    },
+
     'games.update'(gameId, key, symbol) {
-        let grid = GameCollection.findOne({_id: gameId}).grid;
+        let game = GameCollection.findOne({_id: gameId});
+        let grid = game.grid;
         let [x, y] = [
             Math.floor(key / 3),
             key % 3
         ];
         grid[x][y] = symbol;
 
+        let nextPlayer = game.currentPlayer === game.player1?
+            game.player2 : game.player1;
+
         GameCollection.update(
             { _id: gameId },
-            { $set: { grid: grid }}
+            { $set: { grid: grid,
+                      currentPlayer: nextPlayer }}          
         );
     }
 });
