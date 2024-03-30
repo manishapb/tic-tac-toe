@@ -4,7 +4,10 @@ import { Meteor } from 'meteor/meteor';
 
 function updateGrid(gameId, symbol) {
     return function(idx) {
-        Meteor.call('games.update', gameId, idx, symbol)
+        Meteor.call('games.update', gameId, idx, symbol, (_, res)=> {
+            if(res)
+                alert("Game Over. Winner: " + res);
+        })
     }
 }
 

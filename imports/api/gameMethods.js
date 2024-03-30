@@ -23,8 +23,6 @@ Meteor.methods({
             currentPlayer: userId,
             grid: grid,
             state: 'waiting',
-            winner: null,
-            winnerSymbol: null
         });
 
         let game = GameCollection.findOne({
@@ -53,23 +51,25 @@ Meteor.methods({
             key % 3
         ];
         grid[x][y] = symbol;
-
-        let nextPlayer = game.currentPlayer === game.player1?
-                game.player2 : game.player1;
-
-        GameCollection.update(
-            { _id: gameId },
-            { $set: { grid: grid,
-                      currentPlayer: nextPlayer }}
-        );
     
         if (gameOver(grid)) {
             GameCollection.update(
                 { _id: gameId },
-                { $set: { state: 'ended',
-                          winner: grid.currentPlayer,
-                          winnerSymbol: symbol  }}
+                { $set: { grid: grid,
+                          state: 'ended'}}
             );
+            return game.currentPlayer;
+        }
+        else {
+            let nextPlayer = game.currentPlayer === game.player1?
+                game.player2 : game.player1;
+
+            GameCollection.update(
+                { _id: gameId },
+                { $set: { grid: grid,
+                          currentPlayer: nextPlayer }}
+            );
+            return null;
         }
     }
 });
