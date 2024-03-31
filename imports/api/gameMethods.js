@@ -50,6 +50,10 @@ Meteor.methods({
             Math.floor(key / 3),
             key % 3
         ];
+
+        if(grid[x][y])
+            return;
+
         grid[x][y] = symbol;
     
         if (gameOver(grid)) {
@@ -69,7 +73,7 @@ Meteor.methods({
                 { $set: { grid: grid,
                           currentPlayer: nextPlayer }}
             );
-            return null;
+            return;
         }
     }
 });

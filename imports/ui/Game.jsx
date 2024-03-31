@@ -15,12 +15,11 @@ function updateGrid(gameId, symbol, currentPlayer) {
     }
 }
 
-const Cell = ({idx, val, onClick}) => {
-    // console.log("disabled: ", disabled, "idx: ", idx);
+const Cell = ({idx, val, onClick }) => {
     return (
         <div
           className='cell has-background-white'
-          onClick={() => onClick(idx)} >
+          onClick={() => onClick(idx)}>
             { val || '_' }
         </div>
     );
@@ -33,9 +32,7 @@ export const Game = ({ game }) => {
     let yourTurn = (state === 'active' && currentPlayer === uid); 
     let onClick = yourTurn? updateGrid(_id, symbol, currentPlayer) : () => null;
     let cells = grid.flat();
-    let disabled = state === 'ended';
-    console.log("game: ", game);
-    
+
     return (
         <div className='container has-text-centered'>
             <div className='fixed-grid has-3-cols'>
@@ -45,8 +42,7 @@ export const Game = ({ game }) => {
                           key={idx} 
                           idx={idx} 
                           val={val}
-                          onClick={onClick}
-                          disabled={disabled || val !== null}/>) }
+                          onClick={onClick}/>) }
                 </div>
             </div>
             <div>
