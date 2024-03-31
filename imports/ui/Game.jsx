@@ -48,9 +48,13 @@ export const Game = ({ game }) => {
             </div>
             {ended?
                 <>
-                    <div>
-                        { winner === currentPlayer? "You Win!" : "You Lose!" }
-                    </div>
+                    { winner === uid? 
+                        <div className='has-text-success'>
+                            You Win!
+                        </div>
+                        : <div className='has-text-danger'>
+                            You Lose!
+                          </div> }
                     <div class="button" 
                          onClick={() => Meteor.call('games.end', _id)}>
                         End Game
