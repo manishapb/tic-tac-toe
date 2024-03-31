@@ -1,17 +1,9 @@
 import React from 'react';
 import { Meteor } from 'meteor/meteor';
 
-
-function updateGrid(gameId, symbol, currentPlayer) {
+function updateGrid(gameId, symbol) {
     return function(idx) {
-        Meteor.call('games.update', gameId, idx, symbol, (_, res)=> {
-            if(res) {
-                if (res === currentPlayer)
-                    alert("You win");
-                else
-                    alert("You lose");
-            }
-        })
+        Meteor.call('games.update', gameId, idx, symbol)
     }
 }
 
@@ -26,11 +18,11 @@ const Cell = ({idx, val, onClick }) => {
 }
 
 export const Game = ({ game }) => {
-    let { _id, grid, player1, currentPlayer, state } = game;
+    let { _id, grid, player1, currentPlayer, state, ended, winner } = game;
     let uid = Meteor.userId();
     let symbol = uid === player1? 'X' : 'O';
     let yourTurn = (state === 'active' && currentPlayer === uid); 
-    let onClick = yourTurn? updateGrid(_id, symbol, currentPlayer) : () => null;
+    let onClick = (!ended && yourTurn)? updateGrid(_id, symbol) : () => null;
     let cells = grid.flat();
 
     return (
@@ -51,14 +43,20 @@ export const Game = ({ game }) => {
             <div>
                 Game state: {state}
             </div>
-            {state === 'ended'? 
-                <div>
-                    Winner: {game.winner}, {game.sinnerSymbol}
-                </div>
-                :
-                <div>
-                    Your turn?: {yourTurn? 'true' : 'false'}
-                </div>
+            <div>
+                Your turn?: {(!ended && yourTurn)? 'true' : 'false'}
+            </div>
+            {ended?
+                <>
+                    <div>
+                        { winner === currentPlayer? "You Win!" : "You Lose!" }
+                    </div>
+                    <div class="button" 
+                         onClick={() => Meteor.call('games.end', _id)}>
+                        End Game
+                    </div>
+                </>
+                : <></>                
             }
         </div>
     );

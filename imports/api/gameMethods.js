@@ -33,9 +33,7 @@ Meteor.methods({
     },
 
     'games.join'(gameId) {
-        let game = GameCollection.findOne({_id: gameId});
         let player2 = Meteor.userId();
-
         GameCollection.update(
             { _id: gameId },
             { $set: { player2,
@@ -60,11 +58,11 @@ Meteor.methods({
             GameCollection.update(
                 { _id: gameId },
                 { $set: { grid: grid,
-                          state: 'ended'}}
+                          ended: true,
+                          winner: game.currentPlayer }}
             );
             return game.currentPlayer;
-        }
-        else {
+        } else {
             let nextPlayer = game.currentPlayer === game.player1?
                 game.player2 : game.player1;
 
@@ -74,6 +72,29 @@ Meteor.methods({
                           currentPlayer: nextPlayer }}
             );
             return;
+        }
+    },
+
+    'games.end'(_id) {
+        let game = GameCollection.findOne({_id});
+        let userId = Meteor.userId();
+
+        if(game.player1 && game.player2) {
+            if(userId === game.player1)
+                GameCollection.update(
+                    { _id },
+                    { $set: { player1: null }}
+                );
+            else
+                GameCollection.update(
+                    { _id },
+                    { $set: { player2: null }}
+                );  
+        } else {
+            GameCollection.update(
+                { _id },
+                { $set: { state: 'ended' }}
+            );
         }
     }
 });
