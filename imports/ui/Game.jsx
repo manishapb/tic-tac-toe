@@ -12,7 +12,9 @@ const Cell = ({idx, val, onClick }) => {
         <div
           className='cell has-background-white'
           onClick={() => onClick(idx)}>
-            { val || '_' }
+            <figure className='image is-square' style={{fontSize: '6vw'}}>
+                { val || '' }
+            </figure>
         </div>
     );
 }
@@ -26,7 +28,7 @@ export const Game = ({ game }) => {
     let cells = grid.flat();
 
     return (
-        <div className='container has-text-centered'>
+        <div className='container has-text-centered' style={{maxWidth: '80%'}}>
             <div className='fixed-grid has-3-cols'>
                 <div className='grid'>
                     { cells.map((val, idx) =>

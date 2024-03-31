@@ -27,12 +27,13 @@ export const App = () => {
   const game = games[0];
 
   return (
-    <section className="hero is-fullheight">
-      <div className='hero-body'>
-        { isGameLoading()? 
-           <Loading /> 
-           : (game? <Game game={game} /> : <Home />) }
-      </div>
-    </section>
+      <center>
+        <div style={{paddingTop: '40px',
+                     maxWidth: '500px'}}>
+          { isGameLoading()? 
+            <Loading /> 
+            : (game? <Game game={game} /> : <Home />) }
+        </div>
+      </center>
   );
 };
