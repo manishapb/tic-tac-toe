@@ -1,4 +1,4 @@
-### A mulitple player tic-tac-toe game ### 
+### A multi-player tic-tac-toe game ### 
 made with Meteor and react
 
 Steps to deploy and play game:
